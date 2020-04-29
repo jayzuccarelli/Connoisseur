@@ -5,9 +5,11 @@ from keras.layers import Input
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers.convolutional import Convolution2D
 from keras.layers.pooling import MaxPooling2D
-import h5py
+from io import BytesIO
 from keras import backend as K
 import utils_multiMNIST as U
+import urllib
+import keras
 path_to_data_dir = '../Datasets/'
 
 nb_classes = 10
@@ -19,7 +21,11 @@ K.common.set_image_dim_ordering('th')
 # input image dimensions
 
 
+def loadImage(URL):
+    with urllib.request.urlopen(URL) as url:
+        img = keras.image.load_img(BytesIO(url.read()))
 
+    return keras.image.img_to_array(img)
 
 def main():
     X_train, y_train, X_test, y_test = U.get_data(path_to_data_dir)
@@ -37,7 +43,7 @@ def main():
     # Flattering then a Dense layer, and then dropout with rate 0.5
     # Two outputs
 
-    inputs = Input(shape=(1, 42, 28))
+    inputs = Input(shape=(3, None, None))
     step_1 = Convolution2D(filters=8, kernel_size=(2, 2), activation='relu', padding='same')(inputs)
     step_2 = MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='same')(step_1)
     step_3 = Convolution2D(filters=16, kernel_size=(2, 2), activation='relu', padding='same')(step_2)
