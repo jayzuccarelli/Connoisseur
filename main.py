@@ -14,6 +14,8 @@ import tensorflow as tf
 import os
 import pathlib
 path_to_data_dir = '../Datasets/'
+#TODO: Clean up libraries and reorder
+
 
 nb_classes = 10
 num_classes = 10
@@ -27,7 +29,7 @@ K.common.set_image_dim_ordering('th')
 BATCH_SIZE = 32
 IMG_HEIGHT = 224
 IMG_WIDTH = 224
-
+#TODO: Clean up
 
 def main():
     my_data_dir = '/pool001/ezucca/Connoisseur/Artworks'
@@ -50,10 +52,10 @@ def main():
                                                          target_size=(IMG_HEIGHT, IMG_WIDTH),
                                                          classes=list(CLASS_NAMES))
     X, class_label = next(train_data_gen)
-    # Then just use tf.split on this
+    # Then just use tf.split on this #TODO: Separate train, validation and test
 
     inputs = Input(shape=(3, None, None))
-    step_1 = Convolution2D(filters=8, kernel_size=(2, 2), activation='relu', padding='same')(inputs)
+    step_1 = Convolution2D(filters=8, kernel_size=(2, 2), activation='relu', padding='same')(inputs) #TODO: Set channels parameter
     step_2 = MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='same')(step_1)
     step_3 = Convolution2D(filters=16, kernel_size=(2, 2), activation='relu', padding='same')(step_2)
     step_4 = MaxPooling2D(pool_size=(2, 2), padding='same', strides=(2, 2))(step_3)
@@ -65,13 +67,10 @@ def main():
     model = Model(inputs=inputs, outputs=output)
 
     model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'], loss_weights=0.5)
-    #==================== Fetch Data and Fit ===================#
+
     model.fit_generator(train_data_gen, nb_epoch=nb_epoch, steps_per_epoch=steps_per_epoch, verbose=1)
-    # objective_score = model.evaluate(X_test, y_test, batch_size=32)
-    # print('Evaluation on test set:', dict(zip(model.metrics_names, objective_score)))
-    #
-    # #Uncomment the following line if you would like to save your trained model
-    # #model.save('./current_model_conv.h5')
+
+
     if K.backend()== 'tensorflow':
         K.clear_session()
 
