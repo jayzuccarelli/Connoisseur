@@ -16,9 +16,12 @@ def get_artworks():
 
 def get_images():
     artworks = load_artworks()
-    for i, r in artworks.iloc[:3, :].iterrows():
-        ul.request.urlretrieve(r['image'], '/pool001/' + user + '/Connoisseur/Artworks/' +
-                               str(r['artist']) + '/' + str(r['name']) + r['image'][-4:])
+    for i, r in artworks.iterrows():
+        try:
+            ul.request.urlretrieve(r['image'], '/pool001/' + user + '/Connoisseur/Artworks/' +
+                                   str(r['artist']) + '/' + str(r['name']) + r['image'][-4:])
+        except:
+            continue
 
 
 def make_directories(artists):
