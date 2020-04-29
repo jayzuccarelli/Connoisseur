@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import pathlib as pl
 import requests as rq
@@ -124,11 +125,12 @@ def get_images():
     for i, r in artworks.iterrows():
         if (i%100==0) and i!=0:
             print('Completed ', i, ' over ', artworks.shape[0], ' images.')
-        try:
-            ul.request.urlretrieve(r['image'], '/pool001/' + user + '/Connoisseur/Artworks/' +
-                                   str(r['artist']) + '/' + str(r['name']) + r['image'][-4:])
-        except Exception as e:  # most generic exception you can catch
-            log.write("Failed to download {0}: {1}\n".format(str(r['name']), str(e)))
+        if r['image'] != np.nan:
+            try:
+                ul.request.urlretrieve(r['image'], '/pool001/' + user + '/Connoisseur/Artworks/' +
+                                       str(r['artist']) + '/' + str(r['name']) + str(r['image'])[-4:])
+            except Exception as e:  # most generic exception you can catch
+                log.write("Failed to download {0}: {1}\n".format(str(r['name']), str(e)))
 
 
 def make_directories(artists):

@@ -1,15 +1,18 @@
 import numpy as np
 np.random.seed(12321)  # for reproducibility
-from keras.models import Model
-from keras.layers import Input
-from keras.layers.core import Dense, Dropout, Activation, Flatten
-from keras.layers.convolutional import Convolution2D
-from keras.layers.pooling import MaxPooling2D
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input
+from tensorflow.keras.layers.core import Dense, Dropout, Activation, Flatten
+from tensorflow.keras.layers import Convolution2D
+from tensorflow.keras.layers import MaxPooling2D
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from io import BytesIO
 from keras import backend as K
-import utils_multiMNIST as U
 import urllib
 import keras
+import tensorflow as tf
+import os
+import pathlib
 path_to_data_dir = '../Datasets/'
 
 nb_classes = 10
@@ -21,27 +24,33 @@ K.common.set_image_dim_ordering('th')
 # input image dimensions
 
 
-def loadImage(URL):
-    with urllib.request.urlopen(URL) as url:
-        img = keras.image.load_img(BytesIO(url.read()))
+BATCH_SIZE = 32
+IMG_HEIGHT = 224
+IMG_WIDTH = 224
 
-    return keras.image.img_to_array(img)
 
 def main():
-    X_train, y_train, X_test, y_test = U.get_data(path_to_data_dir)
-    #Investigate the test set, training set, and the labels to get intuition about the representation of the data
-
-    #=================== Model ======================#
-    # TO DO: Define a model with inputs an image of size 42*28 and outputs the two digits. The model variable should be called model and should be
-    # based on a Convolutional Neural Network. Consult  https://keras.io/getting-started/functional-api-guide/ for the relevant API.
-
-    # A setting of parameters used by us was the following:
-    # A 2D Conv layer with 8 filters and relu activation
-    # A maxpooling layer with (2,2) size filter and (2,2) stried
-    # A 2D conv layer with 16 filters and relu activation
-    # A maxpooling layer with (2,2) size filter and default, i.e. (1,1), stride
-    # Flattering then a Dense layer, and then dropout with rate 0.5
-    # Two outputs
+    my_data_dir = '/pool001/ezucca/Connoisseur/Artworks'
+    data_dir = pathlib.Path(my_data_dir)
+    CLASS_NAMES = np.array([item.name for item in data_dir.glob('*')])
+    BATCH_SIZE = 32
+    STEPS_PER_EPOCH = np.ceil(len([item.name for item in data_dir.glob('*')]) / BATCH_SIZE)
+    image_generator = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255)
+    BATCH_SIZE = 32
+    IMG_HEIGHT = 200
+    IMG_WIDTH = 200
+    train_data_gen = image_generator.flow_from_directory(directory=str(data_dir),
+                                                         batch_size=BATCH_SIZE,
+                                                         shuffle=True,
+                                                         target_size=(IMG_HEIGHT, IMG_WIDTH),
+                                                         classes=list(CLASS_NAMES))
+    train_data_gen = image_generator.flow_from_directory(directory=str(data_dir),
+                                                         batch_size=BATCH_SIZE,
+                                                         shuffle=True,
+                                                         target_size=(IMG_HEIGHT, IMG_WIDTH),
+                                                         classes=list(CLASS_NAMES))
+    X, class_label = next(train_data_gen)
+    # Then just use tf.split on this
 
     inputs = Input(shape=(3, None, None))
     step_1 = Convolution2D(filters=8, kernel_size=(2, 2), activation='relu', padding='same')(inputs)
@@ -57,12 +66,12 @@ def main():
 
     model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'], loss_weights=0.5)
     #==================== Fetch Data and Fit ===================#
-    model.fit(X_train, [y_train[0], y_train[1]], nb_epoch=nb_epoch, batch_size=batch_size, verbose=1)
-    objective_score = model.evaluate(X_test, y_test, batch_size=32)
-    print('Evaluation on test set:', dict(zip(model.metrics_names, objective_score)))
-
-    #Uncomment the following line if you would like to save your trained model
-    #model.save('./current_model_conv.h5')
+    model.fit_generator(train_data_gen, nb_epoch=nb_epoch, steps_per_epoch=steps_per_epoch, verbose=1)
+    # objective_score = model.evaluate(X_test, y_test, batch_size=32)
+    # print('Evaluation on test set:', dict(zip(model.metrics_names, objective_score)))
+    #
+    # #Uncomment the following line if you would like to save your trained model
+    # #model.save('./current_model_conv.h5')
     if K.backend()== 'tensorflow':
         K.clear_session()
 
