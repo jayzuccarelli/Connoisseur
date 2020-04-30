@@ -56,9 +56,9 @@ def main():
     # Then just use tf.split on this #TODO: Separate train, validation and test
 
     inputs = Input(shape=(IMG_WIDTH, IMG_HEIGHT, 3))
-    step_1 = Convolution2D(filters=8, kernel_size=(2, 2), activation='relu', padding='same', data_format="channels_first")(inputs) #TODO: Set channels parameter
+    step_1 = Convolution2D(filters=8, kernel_size=(2, 2), activation='relu', padding='same', data_format="channels_last")(inputs) #TODO: Set channels parameter
     step_2 = MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='same')(step_1)
-    step_3 = Convolution2D(filters=16, kernel_size=(2, 2), activation='relu', padding='same', data_format="channels_first")(step_2)
+    step_3 = Convolution2D(filters=16, kernel_size=(2, 2), activation='relu', padding='same', data_format="channels_last")(step_2)
     step_4 = MaxPooling2D(pool_size=(2, 2), padding='same', strides=(2, 2))(step_3)
     step_5 = Flatten()(step_4)
     step_6 = Dense(10, activation='relu')(step_5)
