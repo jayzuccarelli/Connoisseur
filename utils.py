@@ -1,13 +1,15 @@
+import bs4 as bs
 import numpy as np
+import os as os
 import pandas as pd
 import pathlib as pl
 import requests as rq
 import string as st
 import urllib as ul
-import bs4 as bs
-import urllib.request
 
-user = 'ezucca'
+
+global USER
+USER = os.getcwd().split('/')[2]
 
 
 def get_artists():
@@ -121,26 +123,26 @@ def get_artworks():
 
 def make_directories(artists):
     for artist in artists:
-        pl.Path('/pool001/' + user + '/Connoisseur/Artworks/'+str(artist)).mkdir(parents=True, exist_ok=True)
+        pl.Path('/pool001/' + USER + '/Connoisseur/Artworks/'+str(artist)).mkdir(parents=True, exist_ok=True)
 
 
 def load_artists():
-    return pd.read_csv('/pool001/' + user + '/Connoisseur/Data/artists.csv')
+    return pd.read_csv('/pool001/' + USER + '/Connoisseur/Data/artists.csv')
 
 
 def load_artworks():
-    return pd.read_csv('/pool001/' + user + '/Connoisseur/Data/artworks.csv')
+    return pd.read_csv('/pool001/' + USER + '/Connoisseur/Data/artworks.csv')
 
 
 def get_images():
     artworks = load_artworks()
-    log = open('/pool001/' + user + '/Connoisseur/Logs/images.log', 'w')
+    log = open('/pool001/' + USER + '/Connoisseur/Logs/images.log', 'w')
     for i, r in artworks.iterrows():
         if (i%100==0) and i!=0:
             print('Completed ', i, ' over ', artworks.shape[0], ' images.')
         if r['image'] != np.nan:
             try:
-                ul.request.urlretrieve(r['image'], '/pool001/' + user + '/Connoisseur/Artworks/' +
+                ul.request.urlretrieve(r['image'], '/pool001/' + USER + '/Connoisseur/Artworks/' +
                                        str(r['artist']) + '/' + str(r['name']) + str(r['image'])[-4:])
             except Exception as e:  # most generic exception you can catch
                 log.write("Failed to download {0}: {1}\n".format(str(r['name']), str(e)))
