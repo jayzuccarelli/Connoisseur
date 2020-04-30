@@ -139,7 +139,7 @@ def get_images():
     log = open('/pool001/' + USER + '/Connoisseur/Logs/images.log', 'w')
     for i, r in artworks.iterrows():
         if (i%100==0) and i!=0:
-            print('Completed ', i, ' over ', artworks.shape[0], ' images.')
+            print('Completed', i, 'over', artworks.shape[0], 'images.')
         if r['image'] != np.nan:
             try:
                 ul.request.urlretrieve(r['image'], '/pool001/' + USER + '/Connoisseur/Artworks/' +
