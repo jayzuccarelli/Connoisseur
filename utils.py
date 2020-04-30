@@ -119,6 +119,19 @@ def get_artworks():
     return artworks
 
 
+def make_directories(artists):
+    for artist in artists:
+        pl.Path('/pool001/' + user + '/Connoisseur/Artworks/'+str(artist)).mkdir(parents=True, exist_ok=True)
+
+
+def load_artists():
+    return pd.read_csv('/pool001/' + user + '/Connoisseur/Data/artists.csv')
+
+
+def load_artworks():
+    return pd.read_csv('/pool001/' + user + '/Connoisseur/Data/artworks.csv')
+
+
 def get_images():
     artworks = load_artworks()
     log = open('/pool001/' + user + '/Connoisseur/Logs/images.log', 'w')
@@ -131,16 +144,3 @@ def get_images():
                                        str(r['artist']) + '/' + str(r['name']) + str(r['image'])[-4:])
             except Exception as e:  # most generic exception you can catch
                 log.write("Failed to download {0}: {1}\n".format(str(r['name']), str(e)))
-
-
-def make_directories(artists):
-    for artist in artists:
-        pl.Path('/pool001/' + user + '/Connoisseur/Artworks/'+str(artist)).mkdir(parents=True, exist_ok=True)
-
-
-def load_artists():
-    return pd.read_csv('/pool001/' + user + '/Connoisseur/Data/artists.csv')
-
-
-def load_artworks():
-    return pd.read_csv('/pool001/' + user + '/Connoisseur/Data/artworks.csv')

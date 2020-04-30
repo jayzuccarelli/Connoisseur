@@ -37,7 +37,7 @@ def main():
     CLASS_NAMES = np.array([item.name for item in data_dir.glob('*')])
     BATCH_SIZE = 32
     STEPS_PER_EPOCH = np.ceil(len([item.name for item in data_dir.glob('*')]) / BATCH_SIZE)
-    image_generator = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1. / 255)
+    image_generator = ImageDataGenerator(rescale=1. / 255)
     BATCH_SIZE = 32
     IMG_HEIGHT = 200
     IMG_WIDTH = 200
@@ -69,7 +69,7 @@ def main():
 
     model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
 
-    model.fit_generator(train_data_gen, steps_per_epoch=STEPS_PER_EPOCH, verbose=1)
+    model.fit_generator(train_data_gen, epochs=nb_epoch, steps_per_epoch=STEPS_PER_EPOCH, verbose=1)
 
 
     if K.backend()== 'tensorflow':
