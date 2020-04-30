@@ -2,7 +2,7 @@ import numpy as np
 np.random.seed(12321)  # for reproducibility
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input
-from tensorflow.keras.layers.core import Dense, Dropout, Activation, Flatten
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
 from tensorflow.keras.layers import Convolution2D
 from tensorflow.keras.layers import MaxPooling2D
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -41,6 +41,7 @@ def main():
     BATCH_SIZE = 32
     IMG_HEIGHT = 200
     IMG_WIDTH = 200
+    nb_epoch = 3
     train_data_gen = image_generator.flow_from_directory(directory=str(data_dir),
                                                          batch_size=BATCH_SIZE,
                                                          shuffle=True,
@@ -54,21 +55,21 @@ def main():
     X, class_label = next(train_data_gen)
     # Then just use tf.split on this #TODO: Separate train, validation and test
 
-    inputs = Input(shape=(3, None, None))
-    step_1 = Convolution2D(filters=8, kernel_size=(2, 2), activation='relu', padding='same')(inputs) #TODO: Set channels parameter
+    inputs = Input(shape=(IMG_WIDTH, IMG_HEIGHT, 3))
+    step_1 = Convolution2D(filters=8, kernel_size=(2, 2), activation='relu', padding='same', data_format="channels_first")(inputs) #TODO: Set channels parameter
     step_2 = MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='same')(step_1)
-    step_3 = Convolution2D(filters=16, kernel_size=(2, 2), activation='relu', padding='same')(step_2)
+    step_3 = Convolution2D(filters=16, kernel_size=(2, 2), activation='relu', padding='same', data_format="channels_first")(step_2)
     step_4 = MaxPooling2D(pool_size=(2, 2), padding='same', strides=(2, 2))(step_3)
     step_5 = Flatten()(step_4)
     step_6 = Dense(10, activation='relu')(step_5)
     step_7 = Dropout(rate=0.5)(step_6)
-    output = Dense(10, activation='softmax')(step_7)
+    output = Dense(len(CLASS_NAMES), activation='softmax')(step_7)
 
     model = Model(inputs=inputs, outputs=output)
 
-    model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'], loss_weights=0.5)
+    model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
 
-    model.fit_generator(train_data_gen, nb_epoch=nb_epoch, steps_per_epoch=steps_per_epoch, verbose=1)
+    model.fit_generator(train_data_gen, steps_per_epoch=STEPS_PER_EPOCH, verbose=1)
 
 
     if K.backend()== 'tensorflow':
