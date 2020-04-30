@@ -1,11 +1,12 @@
 import numpy as np
+import os as os
 import pathlib as pl
 import tensorflow as tf
 import tensorflow.keras as ks
 
 
 global USER
-USER = 'ezucca'
+USER = os.getcwd().split('/')[2]
 
 
 def main():

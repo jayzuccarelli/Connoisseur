@@ -1,15 +1,15 @@
+import bs4 as bs
 import numpy as np
+import os as os
 import pandas as pd
 import pathlib as pl
 import requests as rq
 import string as st
 import urllib as ul
-import bs4 as bs
-import urllib.request
 
 
 global USER
-USER = 'ezucca'
+USER = os.getcwd().split('/')[2]
 
 
 def get_artists():
