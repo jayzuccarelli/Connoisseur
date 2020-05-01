@@ -141,8 +141,9 @@ def get_images():
         if (i%100==0) and i!=0:
             print('Completed', i, 'over', artworks.shape[0], 'images.')
         if r['image'] != np.nan:
-            try:
-                ul.request.urlretrieve(r['image'], '/pool001/' + USER + '/Connoisseur/Artworks/' +
-                                       str(r['artist']) + '/' + str(r['name']) + str(r['image'])[-4:])
-            except Exception as e:  # most generic exception you can catch
-                log.write("Failed to download {0}: {1}\n".format(str(r['name']), str(e)))
+            if os.path.isfile('/pool001/' + USER + '/Connoisseur/Artworks/' +str(r['artist']) + '/' + str(r['name']) + str(r['image'])[-4:]) == False:
+                try:
+                    ul.request.urlretrieve(r['image'], '/pool001/' + USER + '/Connoisseur/Artworks/' +
+                                           str(r['artist']) + '/' + str(r['name']) + str(r['image'])[-4:])
+                except Exception as e:
+                    log.write("Failed to download {0}: {1}\n".format(str(r['name']), str(e)))
