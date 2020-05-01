@@ -2,7 +2,8 @@ import numpy as np
 import os as os
 import pathlib as pl
 import tensorflow as tf
-import keras as ks #TODO: Try Keras only
+import tensorflow.keras as ks #TODO: Try Keras only
+import keras
 
 
 global USER
@@ -27,15 +28,15 @@ def main():
 
 
     # Build Datasets
-    ks.backend.common.set_image_dim_ordering('th') #TODO: Isn't th opposite of the order of channels after?
+    keras.backend.set_image_dim_ordering('th') #TODO: Isn't th opposite of the order of channels after?
     image_generator = ks.preprocessing.image.ImageDataGenerator(rescale=1. / 255)
     train_data_gen = image_generator.flow_from_directory(directory=LOCATION,
                                                          batch_size=BATCH_SIZE,
                                                          shuffle=True,
                                                          target_size=(IMG_HEIGHT, IMG_WIDTH), #TODO: Which order is it?
                                                          classes=CLASSES)
-    X, class_label = next(train_data_gen)
-    train_X, validation_X, test_X = tf.split(X, [0.7*X.shape[0], 0.2*X.shape[0], 0.1*X.shape[0]], 0)
+    # X, class_label = next(train_data_gen)
+    # train_X, validation_X, test_X = tf.split(X, [0.7*X.shape[0], 0.2*X.shape[0], 0.1*X.shape[0]], 0)
 
     # Model
     inputs = ks.layers.Input(shape=(IMG_WIDTH, IMG_HEIGHT, 3)) #TODO: Try None, None - Should it be width and height or viceversa?
