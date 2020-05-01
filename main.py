@@ -1,9 +1,8 @@
 import numpy as np
 import os as os
 import pathlib as pl
-import tensorflow as tf
-import tensorflow.keras as ks #TODO: Try Keras only
-import keras
+import keras as ks
+from PIL import ImageFile
 
 
 global USER
@@ -28,7 +27,8 @@ def main():
 
 
     # Build Datasets
-    keras.backend.set_image_dim_ordering('th') #TODO: Isn't th opposite of the order of channels after?
+    ImageFile.LOAD_TRUNCATED_IMAGES = True
+    ks.backend.set_image_dim_ordering('tf')
     image_generator = ks.preprocessing.image.ImageDataGenerator(rescale=1. / 255)
     train_data_gen = image_generator.flow_from_directory(directory=LOCATION,
                                                          batch_size=BATCH_SIZE,
@@ -60,6 +60,7 @@ def main():
     if ks.backend.backend() == 'tensorflow':
         ks.backend.clear_session()
 
+    print('Done.')
 
 if __name__ == '__main__':
     main()
