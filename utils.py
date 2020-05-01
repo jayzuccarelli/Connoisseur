@@ -147,3 +147,16 @@ def get_images():
                                            str(r['artist']) + '/' + str(r['name']) + str(r['image'])[-4:])
                 except Exception as e:
                     log.write("Failed to download {0}: {1}\n".format(str(r['name']), str(e)))
+
+
+def list_files(directory):
+    elements = os.listdir(directory)
+    all_files = list()
+    for entry in elements:
+        path = os.path.join(directory, entry)
+        if os.path.isdir(path):
+            all_files = all_files + list_files(path)
+        else:
+            all_files.append(path)
+
+    return all_files
