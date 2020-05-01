@@ -1,0 +1,12 @@
+Bugs:
+Understand why 24k images are not downloaded
+fix / in file names (can't save with / in name)
+Handle duplicate names (e.g. Moore)
+
+Features:
+Pretraining with imagenet
+Make transformations to images to get more samples
+Find more datasets such as moma, etc
+
+Optional:
+handle inconsistencies in the url calls rather than at the end

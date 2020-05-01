@@ -2,7 +2,7 @@ import numpy as np
 import os as os
 import pathlib as pl
 import tensorflow as tf
-import tensorflow.keras as ks #TODO: Try Keras only
+import keras as ks #TODO: Try Keras only
 
 
 global USER
