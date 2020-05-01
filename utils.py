@@ -141,10 +141,10 @@ def get_images():
         if (i%100==0) and i!=0:
             print('Completed', i, 'over', artworks.shape[0], 'images.')
         if r['image'] != np.nan:
-            if os.path.isfile('/pool001/' + USER + '/Connoisseur/Artworks/' +str(r['artist']) + '/' + str(r['name']) + str(r['image'])[-4:]) == False:
+            if os.path.isfile('/pool001/' + USER + '/Connoisseur/Artworks/' +str(r['artist']) + '/' + str(r['name']) + '.' + str(str(r['image']).split('.')[-1])) == False:
                 try:
                     ul.request.urlretrieve(r['image'], '/pool001/' + USER + '/Connoisseur/Artworks/' +
-                                           str(r['artist']) + '/' + str(r['name']) + str(r['image'])[-4:])
+                                           str(r['artist']) + '/' + str(r['name']) + '.' + str(str(r['image']).split('.')[-1]))
                 except Exception as e:
                     log.write("Failed to download {0}: {1}\n".format(str(r['name']), str(e)))
 
@@ -158,5 +158,4 @@ def list_files(directory):
             all_files = all_files + list_files(path)
         else:
             all_files.append(path)
-
     return all_files

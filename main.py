@@ -18,9 +18,10 @@ def main():
     IMAGES = PATH
     CLASSES = [item.name for item in PATH.glob('*')]
 
+
     # Parameters
     BATCH_SIZE = 32
-    EPOCHS = 25
+    EPOCHS = 1000
     STEPS_PER_EPOCH = np.ceil(len(CLASSES) / BATCH_SIZE)
     IMG_WIDTH = 256
     IMG_HEIGHT = 256
@@ -47,7 +48,7 @@ def main():
                                      padding='same', data_format="channels_last")(step_2)
     step_4 = ks.layers.MaxPooling2D(pool_size=(2, 2), padding='same', strides=(2, 2))(step_3)
     step_5 = ks.layers.Flatten()(step_4)
-    step_6 = ks.layers.Dense(10, activation='relu')(step_5)
+    step_6 = ks.layers.Dense(64, activation='relu')(step_5)
     step_7 = ks.layers.Dropout(rate=0.5)(step_6)
     output = ks.layers.Dense(len(CLASSES), activation='softmax')(step_7)
 

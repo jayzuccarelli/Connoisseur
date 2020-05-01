@@ -1,4 +1,5 @@
 Bugs:
+Fix extension of JPEG
 Understand why 24k images are not downloaded
 fix / in file names (can't save with / in name)
 Handle duplicate names (e.g. Moore)
