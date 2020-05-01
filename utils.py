@@ -3,8 +3,11 @@ import numpy as np
 import os as os
 import pandas as pd
 import pathlib as pl
+import re
 import requests as rq
+import slugify as sg
 import string as st
+import unicodedata as uc
 import urllib as ul
 
 
@@ -137,14 +140,15 @@ def load_artworks():
 def get_images():
     artworks = load_artworks()
     log = open('/pool001/' + USER + '/Connoisseur/Logs/images.log', 'w')
+    artworks['idx'] = list(range(artworks.shape[0]))
     for i, r in artworks.iterrows():
         if (i%100==0) and i!=0:
             print('Completed', i, 'over', artworks.shape[0], 'images.')
         if r['image'] != np.nan:
-            if os.path.isfile('/pool001/' + USER + '/Connoisseur/Artworks/' +str(r['artist']) + '/' + str(r['name']) + '.' + str(str(r['image']).split('.')[-1])) == False:
+            if os.path.isfile('/pool001/' + USER + '/Connoisseur/Artworks/' +str(r['artist']) + '/' + sg.slugify(str(r['idx'])+'-'+str(r['name'])) + '.' + str(str(r['image']).split('.')[-1])) == False:
                 try:
                     ul.request.urlretrieve(r['image'], '/pool001/' + USER + '/Connoisseur/Artworks/' +
-                                           str(r['artist']) + '/' + str(r['name']) + '.' + str(str(r['image']).split('.')[-1]))
+                                           str(r['artist']) + '/' + sg.slugify(str(r['idx'])+'-'+str(r['name'])) + '.' + str(str(r['image']).split('.')[-1]))
                 except Exception as e:
                     log.write("Failed to download {0}: {1}\n".format(str(r['name']), str(e)))
 
