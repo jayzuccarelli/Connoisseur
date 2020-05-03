@@ -146,12 +146,13 @@ def get_images():
             print('Completed', i, 'over', artworks.shape[0], 'images.')
         if r['image'] != np.nan:
             if os.path.isfile('/pool001/' + USER + '/Connoisseur/Artworks/' +str(r['artist']) + '/' +
-                              sg.slugify(str(r['idx'])+'-'+uc.normalize('NFKD', r['name']).encode('ASCII', 'ignore').decode('ascii'))[:200]
-                              + '.' + str(str(r['image']).split('.')[-1])) == False:
+                              sg.slugify(str(r['idx'])+'-'+uc.normalize('NFKD', r['name']).encode('ASCII', 'ignore').decode('ascii'))[:200] +
+                              '.' + str(str(r['image']).split('.')[-1])) == False:
                 try:
-                    ul.request.urlretrieve(ul.request.quote(r['image'], safe=':/'), '/pool001/' + USER + '/Connoisseur/Artworks/' +
-                                           str(r['artist']) + '/' + sg.slugify(str(r['idx'])+'-'+uc.normalize('NFKD', r['name']).encode('ASCII', 'ignore').decode('ascii'))[:200] +
-                                           '.' + str(str(r['image']).split('.')[-1]))
+                    ul.request.urlretrieve(ul.request.quote(r['image'], safe=':/'),
+                              '/pool001/' + USER + '/Connoisseur/Artworks/' + str(r['artist']) + '/' +
+                              sg.slugify(str(r['idx'])+'-'+uc.normalize('NFKD', r['name']).encode('ASCII', 'ignore').decode('ascii'))[:200] +
+                              '.' + str(str(r['image']).split('.')[-1]))
                 except Exception as e:
                     log.write("Failed to download {0}: {1}\n".format(str(r['name']), str(e)))
 

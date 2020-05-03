@@ -5,9 +5,9 @@ import keras as ks
 from PIL import ImageFile
 
 
-global USER
+global USER, NUM_GPUS
 USER = os.getcwd().split('/')[2]
-
+NUM_GPUS = 2
 
 def main():
     # Locations
@@ -53,6 +53,8 @@ def main():
     output = ks.layers.Dense(len(CLASSES), activation='softmax')(step_7)
 
     model = ks.models.Model(inputs=inputs, outputs=output)
+
+    model = ks.utils.multi_gpu_model(model, gpus=NUM_GPUS)
 
     model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy']) #TODO: Use Adam too
 
