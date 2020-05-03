@@ -6,7 +6,7 @@ from PIL import ImageFile
 
 
 global USER, NUM_GPUS
-USER = os.getcwd().split('/')[2]
+USER = 'killianf'
 NUM_GPUS = 2
 
 def main():
@@ -14,13 +14,18 @@ def main():
     PATH = pl.Path(LOCATION)
     IMAGES = PATH
     CLASSES = [item.name for item in PATH.glob('*')]
-    BATCH_SIZE = 32
-    EPOCHS = 100
-    STEPS_PER_EPOCH = np.ceil(len(CLASSES) / BATCH_SIZE)
-    IMG_WIDTH = 256
-    IMG_HEIGHT = 256
+    BATCH_SIZE = 128
+    EPOCHS = 10
+    STEPS_PER_EPOCH = 1250
+    IMG_WIDTH = 200
+    IMG_HEIGHT = 200
     ImageFile.LOAD_TRUNCATED_IMAGES = True
-    image_generator = ks.preprocessing.image.ImageDataGenerator(rescale=1. / 255)
+    image_generator = ks.preprocessing.image.ImageDataGenerator(rescale=1. / 255,
+                                                                width_shift_range=0.2,
+                                                                height_shift_range=0.2,
+                                                                horizontal_flip=True,
+                                                                vertical_flip=True,
+                                                                rotation_range=90)
     train_data_gen = image_generator.flow_from_directory(directory=IMAGES,
                                                          batch_size=BATCH_SIZE,
                                                          shuffle=True,
@@ -31,7 +36,7 @@ def main():
     step_1 = ks.layers.Convolution2D(filters=32, kernel_size=(4, 4), activation='relu',
                                      padding='same')(in_norm)
     step_2 = ks.layers.MaxPooling2D(pool_size=(4, 4), padding='same')(step_1)
-    step_3 = ks.layers.Convolution2D(filters=32, kernel_size=(4, 4), activation='relu',
+    step_3 = ks.layers.Convolution2D(filters=16, kernel_size=(8, 8), activation='relu',
                                      padding='same')(step_2)
     step_4 = ks.layers.MaxPooling2D(pool_size=(4, 4), padding='same')(step_3)
     step_5 = ks.layers.Convolution2D(filters=16, kernel_size=(2, 2), activation='relu',
@@ -45,7 +50,10 @@ def main():
     output = ks.layers.Dense(len(CLASSES), activation='softmax')(step_11)
     model = ks.models.Model(inputs=inputs, outputs=output)
     model = ks.utils.multi_gpu_model(model, gpus=NUM_GPUS)
-    model.compile(loss='categorical_crossentropy', optimizer=ks.optimizers.Adadelta(), metrics=['accuracy']) #TODO: Use Adam too
+    model = ks.utils.multi_gpu_model(model, gpus=NUM_GPUS)
+    model.compile(loss='categorical_crossentropy',
+                  optimizer=ks.optimizers.Adadelta(),
+                  metrics=['accuracy'])
     model.fit_generator(train_data_gen, epochs=EPOCHS, steps_per_epoch=STEPS_PER_EPOCH, verbose=1)
     if ks.backend.backend() == 'tensorflow':
         ks.backend.clear_session()
