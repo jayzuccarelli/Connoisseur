@@ -10,4 +10,4 @@
 #SBATCH --time=1-00:00:00
 module load python/3.6.3
 module load sloan/python/modules/python-3.6/tensorflow/1.9.0/gpu
-python3.6 main.py
+python3 main.py

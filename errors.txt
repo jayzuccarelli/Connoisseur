@@ -1,19 +1,16 @@
-2020-05-02 12:38:36.863910: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX AVX2 FMA
-2020-05-02 12:38:46.687721: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1392] Found device 0 with properties: 
+2020-05-03 10:27:48.151356: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX AVX2 FMA
+2020-05-03 10:27:57.981696: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1392] Found device 0 with properties: 
 name: Tesla K80 major: 3 minor: 7 memoryClockRate(GHz): 0.8235
 pciBusID: 0000:84:00.0
 totalMemory: 11.17GiB freeMemory: 11.11GiB
-2020-05-02 12:38:46.740630: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1392] Found device 1 with properties: 
+2020-05-03 10:27:58.037446: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1392] Found device 1 with properties: 
 name: Tesla K80 major: 3 minor: 7 memoryClockRate(GHz): 0.8235
 pciBusID: 0000:85:00.0
 totalMemory: 11.17GiB freeMemory: 11.11GiB
-2020-05-02 12:38:46.740989: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1471] Adding visible gpu devices: 0, 1
-2020-05-02 12:38:47.199375: I tensorflow/core/common_runtime/gpu/gpu_device.cc:952] Device interconnect StreamExecutor with strength 1 edge matrix:
-2020-05-02 12:38:47.199425: I tensorflow/core/common_runtime/gpu/gpu_device.cc:958]      0 1 
-2020-05-02 12:38:47.199434: I tensorflow/core/common_runtime/gpu/gpu_device.cc:971] 0:   N Y 
-2020-05-02 12:38:47.199438: I tensorflow/core/common_runtime/gpu/gpu_device.cc:971] 1:   Y N 
-2020-05-02 12:38:47.199585: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1084] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10766 MB memory) -> physical GPU (device: 0, name: Tesla K80, pci bus id: 0000:84:00.0, compute capability: 3.7)
-2020-05-02 12:38:47.303090: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1084] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:1 with 10766 MB memory) -> physical GPU (device: 1, name: Tesla K80, pci bus id: 0000:85:00.0, compute capability: 3.7)
-Using TensorFlow backend.
-/home/ezucca/.local/lib/python3.6/site-packages/PIL/TiffImagePlugin.py:788: UserWarning: Corrupt EXIF data.  Expecting to read 4 bytes but only got 0. 
-  warnings.warn(str(msg))
+2020-05-03 10:27:58.037705: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1471] Adding visible gpu devices: 0, 1
+2020-05-03 10:27:58.466857: I tensorflow/core/common_runtime/gpu/gpu_device.cc:952] Device interconnect StreamExecutor with strength 1 edge matrix:
+2020-05-03 10:27:58.466907: I tensorflow/core/common_runtime/gpu/gpu_device.cc:958]      0 1 
+2020-05-03 10:27:58.466915: I tensorflow/core/common_runtime/gpu/gpu_device.cc:971] 0:   N Y 
+2020-05-03 10:27:58.466919: I tensorflow/core/common_runtime/gpu/gpu_device.cc:971] 1:   Y N 
+2020-05-03 10:27:58.467072: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1084] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10766 MB memory) -> physical GPU (device: 0, name: Tesla K80, pci bus id: 0000:84:00.0, compute capability: 3.7)
+2020-05-03 10:27:58.570920: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1084] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:1 with 10766 MB memory) -> physical GPU (device: 1, name: Tesla K80, pci bus id: 0000:85:00.0, compute capability: 3.7)

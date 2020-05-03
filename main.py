@@ -20,9 +20,8 @@ def main():
 
 
     # Parameters
-    BATCH_SIZE = 32
+    BATCH_SIZE = 128
     EPOCHS = 1000
-    STEPS_PER_EPOCH = np.ceil(len(CLASSES) / BATCH_SIZE)
     IMG_WIDTH = 256
     IMG_HEIGHT = 256
 
@@ -41,15 +40,15 @@ def main():
 
     # Model
     inputs = ks.layers.Input(shape=(IMG_WIDTH, IMG_HEIGHT, 3)) #TODO: Try None, None - Should it be width and height or viceversa?
-    step_1 = ks.layers.Convolution2D(filters=8, kernel_size=(2, 2), activation='relu',
+    step_1 = ks.layers.Convolution2D(filters=8, kernel_size=(3, 3), activation='relu',
                                      padding='same', data_format="channels_last")(inputs)
-    step_2 = ks.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='same')(step_1)
-    step_3 = ks.layers.Convolution2D(filters=16, kernel_size=(2, 2), activation='relu',
+    step_2 = ks.layers.MaxPooling2D(pool_size=(2, 2), strides=2, padding='same')(step_1)
+    step_3 = ks.layers.Convolution2D(filters=16, kernel_size=(5, 5), activation='relu',
                                      padding='same', data_format="channels_last")(step_2)
-    step_4 = ks.layers.MaxPooling2D(pool_size=(2, 2), padding='same', strides=(2, 2))(step_3)
+    step_4 = ks.layers.MaxPooling2D(pool_size=(2, 2), padding='same', strides=2)(step_3)
     step_5 = ks.layers.Flatten()(step_4)
     step_6 = ks.layers.Dense(256, activation='relu')(step_5)
-    step_7 = ks.layers.Dense(256, activation='relu')(step_6)
+    step_7 = ks.layers.Dense(128, activation='relu')(step_6)
     step_8 = ks.layers.Dropout(rate=0.5)(step_7)
     output = ks.layers.Dense(len(CLASSES), activation='softmax')(step_8)
 
@@ -57,9 +56,11 @@ def main():
 
     model = ks.utils.multi_gpu_model(model, gpus=NUM_GPUS)
 
-    model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy']) #TODO: Use Adam too
+    optimizer = ks.optimizers.Adam(lr=0.001)
 
-    model.fit_generator(train_data_gen, epochs=EPOCHS, steps_per_epoch=STEPS_PER_EPOCH, verbose=1)
+    model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+
+    model.fit_generator(train_data_gen, epochs=EPOCHS, verbose=1)
 
     if ks.backend.backend() == 'tensorflow':
         ks.backend.clear_session()
