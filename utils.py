@@ -160,10 +160,12 @@ def get_images():
 def list_files(directory):
     elements = os.listdir(directory)
     all_files = list()
-    for entry in elements:
+    for idx, entry in enumerate(elements):
         path = os.path.join(directory, entry)
         if os.path.isdir(path):
             all_files = all_files + list_files(path)
         else:
             all_files.append(path)
+        if idx % 1000 == 0:
+            print('{} images found'.format(idx))
     return all_files
