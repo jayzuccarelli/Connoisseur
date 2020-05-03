@@ -49,8 +49,9 @@ def main():
     step_4 = ks.layers.MaxPooling2D(pool_size=(2, 2), padding='same', strides=(2, 2))(step_3)
     step_5 = ks.layers.Flatten()(step_4)
     step_6 = ks.layers.Dense(256, activation='relu')(step_5)
-    step_7 = ks.layers.Dropout(rate=0.5)(step_6)
-    output = ks.layers.Dense(len(CLASSES), activation='softmax')(step_7)
+    step_7 = ks.layers.Dense(256, activation='relu')(step_6)
+    step_8 = ks.layers.Dropout(rate=0.5)(step_7)
+    output = ks.layers.Dense(len(CLASSES), activation='softmax')(step_8)
 
     model = ks.models.Model(inputs=inputs, outputs=output)
 
