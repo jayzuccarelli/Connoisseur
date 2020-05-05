@@ -142,7 +142,7 @@ def get_images():
     log = open('/pool001/' + USER + '/Connoisseur/Logs/images.log', 'w')
     artworks['idx'] = list(range(artworks.shape[0]))
     for i, r in artworks.iterrows():
-        if (i%100==0) and i!=0:
+        if (i % 100 == 0) and i != 0:
             print('Completed', i, 'over', artworks.shape[0], 'images.')
         if r['image'] != np.nan:
             if os.path.isfile('/pool001/' + USER + '/Connoisseur/Artworks/' +str(r['artist']) + '/' +
