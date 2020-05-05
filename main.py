@@ -64,7 +64,9 @@ def main():
 
     optimizer = ks.optimizers.Adam(lr=0.001)
 
-    model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy',
+                  optimizer=optimizer,
+                  metrics=['accuracy', 'top_k_categorical_accuracy'])
 
     model.fit_generator(train_data_gen, epochs=EPOCHS, steps_per_epoch=STEPS_PER_EPOCH, verbose=1)
 
