@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=connoisseur
-#SBATCH --output=output.txt
-#SBATCH --error=errors.txt
+#SBATCH --output=output_pretrained.txt
+#SBATCH --error=errors_pretrained.txt
 #SBATCH -p sched_mit_sloan_gpu
 #SBATCH --gres=gpu:2
 #SBATCH --ntasks=1
