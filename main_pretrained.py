@@ -16,11 +16,11 @@ def main():
     PATH = pl.Path(LOCATION)
     IMAGES = PATH
     CLASSES = [item.name for item in PATH.glob('*')]
-    BATCH_SIZE = 128
-    EPOCHS = 250
-    STEPS_PER_EPOCH = np.ceil(len(CLASSES) / BATCH_SIZE)
-    IMG_WIDTH = 256
-    IMG_HEIGHT = 256
+    BATCH_SIZE = 256
+    EPOCHS = 50
+    # STEPS_PER_EPOCH = np.ceil(len(CLASSES) / BATCH_SIZE)
+    IMG_WIDTH = 200
+    IMG_HEIGHT = 200
     ks.backend.set_image_dim_ordering('tf')
     ImageFile.LOAD_TRUNCATED_IMAGES = True
     image_generator = ks.preprocessing.image.ImageDataGenerator(rescale=1. / 255,
@@ -36,7 +36,8 @@ def main():
                                                          target_size=(IMG_HEIGHT, IMG_WIDTH),
                                                          color_mode='rgb',
                                                          class_mode='categorical',
-                                                         classes=CLASSES)
+                                                         classes=CLASSES,
+                                                         interpolation='lanczos')
 
     input_tensor = ks.layers.Input(shape=(IMG_HEIGHT, IMG_WIDTH, 3))
 
@@ -44,7 +45,8 @@ def main():
 
     # add a global spatial average pooling layer
     x = base_model.output
-    x = ks.layers.Flatten()(x)
+    x = ks.layers.GlobalAveragePooling2D()(x)
+    x = ks.layers.BatchNormalization()(x)
     # let's add a fully-connected layer
     x = ks.layers.Dense(4096, activation='relu')(x)
     x = ks.layers.Dropout(rate=0.1)(x)
@@ -60,26 +62,26 @@ def main():
     for layer in base_model.layers:
         layer.trainable = False
 
-    model = ks.utils.multi_gpu_model(model, gpus=NUM_GPUS)
+    #model = ks.utils.multi_gpu_model(model, gpus=NUM_GPUS)
     model.compile(loss='categorical_crossentropy',
-                  optimizer='rmsprop',
+                  optimizer=ks.optimizers.RMSprop(lr=2e-05),
                   metrics=['accuracy', 'top_k_categorical_accuracy'])
-    model.fit_generator(train_data_gen, epochs=EPOCHS, steps_per_epoch=STEPS_PER_EPOCH, verbose=1)
+    model.fit_generator(train_data_gen, epochs=EPOCHS, verbose=1)
 
     # we chose to train the top 2 inception blocks, i.e. we will freeze
     # the first 249 layers and unfreeze the rest:
-    for layer in model.layers[:249]:
-        layer.trainable = False
-    for layer in model.layers[249:]:
-        layer.trainable = True
+    #for layer in model.layers[:249]:
+    #    layer.trainable = False
+    #for layer in model.layers[249:]:
+    #    layer.trainable = True
 
     # we need to recompile the model for these modifications to take effect
     # we use SGD with a low learning rate
-    model.compile(optimizer=SGD(lr=0.0001, momentum=0.9),
-                  loss='categorical_crossentropy',
-                  metrics=['accuracy', 'top_k_categorical_accuracy'])
+    #model.compile(optimizer=SGD(lr=0.0001, momentum=0.9),
+    #              loss='categorical_crossentropy',
+    #              metrics=['accuracy', 'top_k_categorical_accuracy'])
 
-    model.fit_generator(train_data_gen, epochs=EPOCHS, steps_per_epoch=STEPS_PER_EPOCH, verbose=1)
+    #model.fit_generator(train_data_gen, epochs=EPOCHS, steps_per_epoch=STEPS_PER_EPOCH, verbose=1)
 
     if ks.backend.backend() == 'tensorflow':
         ks.backend.clear_session()

@@ -9,6 +9,11 @@ global USER, NUM_GPUS
 USER = 'killianf'
 NUM_GPUS = 2
 
+def preprocess_input():
+
+
+
+
 def main():
     # Locations
     LOCATION = '/pool001/' + USER + '/Connoisseur/Artworks'
@@ -30,19 +35,16 @@ def main():
     ImageFile.LOAD_TRUNCATED_IMAGES = True
     ks.backend.set_image_dim_ordering('tf')
     image_generator = ks.preprocessing.image.ImageDataGenerator(rescale=1. / 255,
-                                                                rotation_range=45,
-                                                                width_shift_range=.15,
-                                                                height_shift_range=.15,
-                                                                horizontal_flip=True,
-                                                                vertical_flip=True,
-                                                                zoom_range=0.5)
+                                                                rotation_range=20,
+                                                                channel_shift_range=20,
+                                                                horizontal_flip=True)
     train_data_gen = image_generator.flow_from_directory(directory=LOCATION,
                                                          batch_size=BATCH_SIZE,
                                                          shuffle=True,
                                                          target_size=(IMG_HEIGHT, IMG_WIDTH),
+                                                         interpolation='lanczos:random',
                                                          classes=CLASSES)
-    # X, class_label = next(train_data_gen)
-    # train_X, validation_X, test_X = tf.split(X, [0.7*X.shape[0], 0.2*X.shape[0], 0.1*X.shape[0]], 0)
+
 
     # Model
     inputs = ks.layers.Input(shape=(IMG_WIDTH, IMG_HEIGHT, 3)) #TODO: Try None, None - Should it be width and height or viceversa?
