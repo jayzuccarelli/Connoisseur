@@ -192,7 +192,7 @@ tqdm==4.42.1
 traitlets==4.3.3
 turicreate==6.1
 typing-extensions==3.7.2
-urllib3==1.22
+urllib3==1.24.2
 virtualenv==15.1.0
 wcwidth==0.1.7
 webencodings==0.5.1
