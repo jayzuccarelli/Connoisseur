@@ -1,15 +1,15 @@
 import numpy as np
 import os as os
 import pathlib as pl
+import tensorflow as tf
 import keras as ks
 from keras.applications.inception_resnet_v2 import InceptionResNetV2
-from keras.optimizers import SGD
 from PIL import ImageFile
 
 
 global USER, NUM_GPUS
 USER = 'killianf'
-NUM_GPUS = 2
+NUM_GPUS = 3
 
 def main():
     LOCATION = '/pool001/' + USER + '/Connoisseur/Artworks'
@@ -17,7 +17,7 @@ def main():
     IMAGES = PATH
     CLASSES = [item.name for item in PATH.glob('*')]
     BATCH_SIZE = 256
-    EPOCHS = 50
+    EPOCHS = 30
     # STEPS_PER_EPOCH = np.ceil(len(CLASSES) / BATCH_SIZE)
     IMG_WIDTH = 200
     IMG_HEIGHT = 200
@@ -51,45 +51,31 @@ def main():
     x = ks.layers.Dense(4096, activation='relu')(x)
     x = ks.layers.Dropout(rate=0.1)(x)
     x = ks.layers.Dense(4096, activation='relu')(x)
-    # and a logistic layer -- let's say we have 200 classes
+    # and a logistic layer
     predictions = ks.layers.Dense(len(CLASSES), activation='softmax')(x)
 
-    # this is the model we will train
-    model = ks.models.Model(inputs=base_model.input, outputs=predictions)
+    with tf.device('/cpu:0'):
+        # this is the model we will train
+        model = ks.models.Model(inputs=base_model.input, outputs=predictions)
 
     # first: train only the top layers (which were randomly initialized)
-    # i.e. freeze all convolutional InceptionV3 layers
+    # i.e. freeze all InceptionResNetV2 layers
     for layer in base_model.layers:
         layer.trainable = False
 
-    #model = ks.utils.multi_gpu_model(model, gpus=NUM_GPUS)
+    model = ks.utils.multi_gpu_model(model, gpus=NUM_GPUS)
     model.compile(loss='categorical_crossentropy',
-                  optimizer=ks.optimizers.RMSprop(lr=2e-05),
+                  optimizer=ks.optimizers.RMSprop(lr=2e-03),
                   metrics=['accuracy', 'top_k_categorical_accuracy'])
     model.fit_generator(train_data_gen, epochs=EPOCHS, verbose=1)
-
-    # we chose to train the top 2 inception blocks, i.e. we will freeze
-    # the first 249 layers and unfreeze the rest:
-    #for layer in model.layers[:249]:
-    #    layer.trainable = False
-    #for layer in model.layers[249:]:
-    #    layer.trainable = True
-
-    # we need to recompile the model for these modifications to take effect
-    # we use SGD with a low learning rate
-    #model.compile(optimizer=SGD(lr=0.0001, momentum=0.9),
-    #              loss='categorical_crossentropy',
-    #              metrics=['accuracy', 'top_k_categorical_accuracy'])
-
-    #model.fit_generator(train_data_gen, epochs=EPOCHS, steps_per_epoch=STEPS_PER_EPOCH, verbose=1)
 
     if ks.backend.backend() == 'tensorflow':
         ks.backend.clear_session()
 
     model_json = model.to_json()
-    with open("model_pretrained.json", "w") as json_file:
+    with open('/pool001/' + USER + '/Connoisseur/' + "model_pretrained.json", "w") as json_file:
         json_file.write(model_json)
-    model.save_weights("model_pretrained.h5")
+    model.save_weights('/pool001/' + USER + '/Connoisseur/' + "model_pretrained.h5")
 
     print('Done.')
 
