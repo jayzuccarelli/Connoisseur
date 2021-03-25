@@ -152,7 +152,7 @@ python-dotenv==0.8.2
 python-Levenshtein==0.12.0
 pytrends==4.7.2
 pytz==2018.3
-PyYAML==3.12
+PyYAML==5.4
 pyzmq==18.1.0
 qtconsole==4.5.5
 Quandl==3.3.0
